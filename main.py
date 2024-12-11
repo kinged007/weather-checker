@@ -63,7 +63,13 @@ def send_telegram_message(token, chat_id, message):
         'text': message,
         'parse_mode': 'Markdown'
     }
-    requests.post(url, json=payload)
+    response = requests.post(url, json=payload)
+    
+    # Check response status
+    if response.status_code == 200:
+        print(f"Message sent successfully to chat ID {chat_id}.")
+    else:
+        print(f"Failed to send message to chat ID {chat_id}. Error: {response.text}")
 
 def main():
     parser = argparse.ArgumentParser(description='Check the weather forecast.')
