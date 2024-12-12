@@ -18,7 +18,7 @@ def get_weather_data(api_key, city, days):
 # Function to parse weather data and create a summary table
 def create_weather_summary(weather_data):
     table = PrettyTable()
-    table.field_names = ["Date/Time", "Weather", "Temp (°C)"]
+    table.field_names = ["Date/Time", "Weather Icon", "Temp (°C)"]
 
     max_temps = []
     min_temps = []
@@ -26,17 +26,18 @@ def create_weather_summary(weather_data):
 
     for entry in weather_data['list']:
         dt = datetime.fromtimestamp(entry['dt'])
-        weather = entry['weather'][0]['description']
+        icon_code = entry['weather'][0]['icon']
+        weather_icon_url = f"https://openweathermap.org/img/wn/{icon_code}@2x.png"
         temp_max = round(entry['main']['temp_max'])
         temp_min = round(entry['main']['temp_min'])
         max_temps.append(temp_max)
         min_temps.append(temp_min)
-        weather_conditions.append(weather)
-        table.add_row([dt.strftime('%d/%m %H:%M'), weather, f"{temp_max} | {temp_min}"])
+        weather_conditions.append(weather_icon_url)
+        table.add_row([dt.strftime('%d/%m %H:%M'), weather_icon_url, f"{temp_max} | {temp_min}"])
 
     avg_max_temp = sum(max_temps) / len(max_temps)
     avg_min_temp = sum(min_temps) / len(min_temps)
-    most_common_weather = Counter(weather_conditions).most_common(1)[0][0]
+    most_common_weather_icon = Counter(weather_conditions).most_common(1)[0][0]
 
     city_name = weather_data['city']['name']
     country = weather_data['city']['country']
@@ -44,7 +45,7 @@ def create_weather_summary(weather_data):
     report = f"*Weather report for {city_name}, {country}*\n"
     report += f"*Average Max Temperature:* {round(avg_max_temp)}°C\n"
     report += f"*Average Min Temperature:* {round(avg_min_temp)}°C\n"
-    report += f"*Most Common Weather:* {most_common_weather}\n"
+    report += f"*Most Common Weather Icon:* {most_common_weather_icon}\n"
     report += f"```\n{table}\n```\n"  # Wrap the table in backticks
 
     print(report)
