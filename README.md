@@ -36,6 +36,8 @@ python main.py --city <CityName> --days <NumberOfDays>
 For example, to check the weather in London for the next 3 days:
 ```
 python main.py --city London --days 3
+```
+
 
 ## Roadmap
 
